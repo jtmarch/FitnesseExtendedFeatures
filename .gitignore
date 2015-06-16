@@ -1,0 +1,14 @@
+*.zip
+.classpath
+.project
+.settings/
+FitNesseRoot/ErrorLogs/
+FitNesseRoot/RecentChanges/
+FitNesseRoot/updateDoNotCopyOverList
+FitNesseRoot/updateList
+FitNesseRoot/files/testResults
+FitNesseRoot/files/testProgress
+target/
+*.log
+.idea
+*.iml
