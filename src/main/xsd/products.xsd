@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="dataroot">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="Product" name="Product" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="generated"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="Product">
+        <xs:sequence>
+            <xs:element name="Id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="productId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="productName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="productPrice" type="xs:double" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="productCurrency" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ProductUnit" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="productScale" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="productTaxClass" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+</xs:schema>
