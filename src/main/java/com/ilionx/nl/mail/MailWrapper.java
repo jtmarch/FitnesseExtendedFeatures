@@ -12,10 +12,14 @@ public class MailWrapper {
 
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
-    private Map<String, String> valueHolder = new HashMap<>();
+    private Map<String, Object> valueHolder = new HashMap<>();
 
     public String getProperty(final String param) {
-        return this.valueHolder.get(param);
+        return (String) this.valueHolder.get(param);
+    }
+
+    public Date getDateProperty(final String param) {
+        return (Date) this.valueHolder.get(param);
     }
 
     public void setFrom(final String from) {
@@ -42,6 +46,10 @@ public class MailWrapper {
         this.valueHolder.put("replyTo", replyTo);
     }
 
+    public void setTime(final Date time) {
+        this.valueHolder.put("time", time);
+    }
+
     public void setBcc(String bcc) {
         this.valueHolder.put("bcc", bcc);
     }
@@ -60,7 +68,7 @@ public class MailWrapper {
     public Map<String, String> getExternalLinks() {
         Map<String, String> externalLinks = new HashMap();
 
-        String bodyContent = this.valueHolder.get("content");
+        String bodyContent = this.getProperty("content");
         int startA = bodyContent.indexOf("<a");
 
         while (startA >= 0) {
@@ -71,7 +79,7 @@ public class MailWrapper {
             String subContent = bodyContent.substring(startA, endA);
 
             int hrefStart = subContent.indexOf("href=");
-            int hrefEnd = subContent.indexOf("\"", hrefStart+6);
+            int hrefEnd = subContent.indexOf("\"", hrefStart + 6);
             String linkAddress = subContent.substring(hrefStart + 6, hrefEnd);
 
             int labelStart = subContent.indexOf(">");
@@ -79,7 +87,7 @@ public class MailWrapper {
 
             externalLinks.put(linkName, linkAddress);
 
-            bodyContent = bodyContent.substring(endA+4);
+            bodyContent = bodyContent.substring(endA + 4);
             startA = bodyContent.indexOf("<a");
 
         }

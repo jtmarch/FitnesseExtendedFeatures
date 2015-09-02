@@ -25,16 +25,18 @@ public class MailService {
             while (attempts != 0) {
                 inbox = store.getFolder(INBOX);
                 inbox.open(Folder.READ_ONLY);
-                int newMessages = inbox.getNewMessageCount();
-                Message[] messages = inbox.getMessages(1, newMessages);
-                LOG.debug("Nr of messages found: " + messages.length);
+                Message[] messages = inbox.getMessages();
+                LOG.info("Nr of messages found: " + messages.length);
                 FetchProfile fp = new FetchProfile();
                 fp.add(FetchProfile.Item.ENVELOPE);
                 inbox.fetch(messages, fp);
 
                 Message[] messagesFound = inbox.search(searchTerm, messages);
+
+                LOG.info("Skipped mails: " + searchTerm.getCountSkipped());
+
                 if (messagesFound.length > 0) {
-                    return getMailWrapper(messagesFound[0], getBody(messagesFound[0]));
+                    return getMailWrapper(messagesFound[0]);
                 }
 
                 attempts--;
@@ -75,11 +77,13 @@ public class MailService {
         throw new AssertionError("Unsupported message content found: " + messageContent.getClass());
     }
 
-    public MailWrapper getMailWrapper(final Message msg, final String body) throws MessagingException {
+    public MailWrapper getMailWrapper(final Message msg) throws MessagingException, IOException {
         MailWrapper mw = new MailWrapper();
         mw.setDate(msg.getSentDate());
         mw.setSubject(msg.getSubject());
-        mw.setContent(body);
+        mw.setContent(getBody(msg));
+
+        mw.setTime(msg.getReceivedDate());
 
         mw.setFrom(getAddressesAsString(msg.getFrom()));
         mw.setTo(getAddressesAsString(msg.getRecipients(Message.RecipientType.TO)));

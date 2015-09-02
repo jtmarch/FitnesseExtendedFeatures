@@ -19,10 +19,12 @@ public class MailHandlerFixture {
 
     private static final Logger LOG = LoggerFactory.getLogger(MailHandlerFixture.class);
 
+    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     private static final String MAIL_SMTP_HOST = "mail.smtp.host";
     private static final String MAIL_SMTP_PORT = "mail.smtp.port";
     private static final String MAIL_USER = "mail.user";
     private static final String MAIL_PASSWORD = "mail.password";
+
     private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
 
     private String protocol;
@@ -40,7 +42,6 @@ public class MailHandlerFixture {
     private String sendingPort = "25";
 
     private MailWrapper mailWrapper = null;
-
     private MailService mailService = new MailService();
 
     /**
@@ -109,6 +110,9 @@ public class MailHandlerFixture {
             // Set Subject: header field
             message.setSubject(subject);
 
+            // Set date: header field
+            message.setSentDate(new Date());
+
             // Now set the actual message
             message.setText(content);
 
@@ -134,24 +138,19 @@ public class MailHandlerFixture {
         if (protocol == null) {
             throw new AssertionError("Protocol must be set");
         }
+        return findMail(expression, sender, date);
+    }
+
+    private boolean findMail(String expression, String sender, String date) throws MessagingException {
         long start = new Date().getTime();
         Store store = mailService.connectToMailServer(protocol, receivingPort, host, user, password);
-        this.mailWrapper = mailService.readMail(store, expression, null, null);
+        this.mailWrapper = mailService.readMail(store, expression, sender, date);
         long end = new Date().getTime();
 
         LOG.debug("Time for reading mail: " + (end - start) + "ms");
 
         if (this.mailWrapper == null) {
             return false;
-            //throw new AssertionError("No email found with expression: " + expression + " and sender: " + sender + " and date: " + date);
-        }
-        if (!sender.equalsIgnoreCase(this.mailWrapper.getProperty("from"))) {
-            return false;
-            //throw new AssertionError("Email has different sender: " + this.mailWrapper.getProperty("from") + " vs " + sender);
-        }
-        if (!date.equalsIgnoreCase(this.mailWrapper.getProperty("date"))) {
-            return false;
-            //throw new AssertionError("Email has different date: " + this.mailWrapper.getProperty("date") + " vs " + date);
         }
         return true;
     }
@@ -168,32 +167,16 @@ public class MailHandlerFixture {
      */
     public boolean noMailReceivedWhichContainsFromOnDateWithinSeconds(final String expression, final String sender, final String date, final String seconds) throws ParseException, MessagingException {
         long startTime = System.currentTimeMillis();
-        long timeout = Long.parseLong(seconds, 10)*1000;
+        long timeout = Long.parseLong(seconds, 10) * 1000;
 
-        while(false||(System.currentTimeMillis()-startTime)<timeout)
-        {
+        while (false || (System.currentTimeMillis() - startTime) < timeout) {
             try {
                 Thread.sleep(1000);
-            } catch(InterruptedException ex) {
+            } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
         }
-        Store store = mailService.connectToMailServer(protocol, receivingPort, host, user, password);
-        this.mailWrapper = mailService.readMail(store, expression, null, null);
-
-        if (this.mailWrapper == null) {
-            return false;
-            //throw new AssertionError("No email found with expression: " + expression + " and sender: " + sender + " and date: " + date);
-        }
-        if (!sender.equalsIgnoreCase(this.mailWrapper.getProperty("from"))) {
-            return false;
-            //throw new AssertionError("Email has different sender: " + this.mailWrapper.getProperty("from") + " vs " + sender);
-        }
-        if (!date.equalsIgnoreCase(this.mailWrapper.getProperty("date"))) {
-            return false;
-            //throw new AssertionError("Email has different date: " + this.mailWrapper.getProperty("date") + " vs " + date);
-        }
-        return true;
+        return findMail(expression, sender, date);
     }
 
     /**
@@ -207,27 +190,18 @@ public class MailHandlerFixture {
      * @return
      */
     public boolean mailReceivedWhichContainsFromAfterTimestamp(final String expression, final String sender, final String time) throws ParseException, MessagingException {
-        Store store = mailService.connectToMailServer(protocol, receivingPort, host, user, password);
-        this.mailWrapper = mailService.readMail(store, expression, null, null);
-
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        Date mailTime = format.parse(this.mailWrapper.getProperty("time"));
-        Date expectedTime = format.parse(time);
-        if (!mailTime.after(expectedTime)) {
-            //try one more time
-            this.mailWrapper = mailService.readMail(store, expression, null, null);
-            if (this.mailWrapper == null) throw new AssertionError("No email found with expression: " + expression);
-            mailTime = format.parse(this.mailWrapper.getProperty("time"));
-            if (!mailTime.after(expectedTime)) {
-                return false;
-                //throw new AssertionError("Email not after expected timestamp: " + this.mailWrapper.getProperty("time") + " vs " + time);
+        boolean result = findMail(expression, sender, null);
+        if (result) {
+            Date expectedTime = DATE_TIME_FORMAT.parse(time);
+            if (!this.mailWrapper.getDateProperty("time").after(expectedTime)) {
+                //try one more time
+                result = findMail(expression, sender, null);
+                if (result && !this.mailWrapper.getDateProperty("time").after(expectedTime)) {
+                    result = false;
+                }
             }
         }
-        if (!sender.equalsIgnoreCase(this.mailWrapper.getProperty("from"))) {
-            return false;
-            //throw new AssertionError("Email has different sender: " + this.mailWrapper.getProperty("from") + " vs " + sender);
-        }
-        return true;
+        return result;
     }
 
     /**

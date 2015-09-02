@@ -21,15 +21,18 @@ public class MailSearchTerm extends SearchTerm {
 
     private static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-    private static final List<String> alreadyChecked = new ArrayList<>();
+    private final List<String> alreadyChecked = new ArrayList<>();
 
     private final List<Matcher> matchers;
+
+    private int countSkipped = 0;
 
     public MailSearchTerm(List<Matcher> matchers) {
         this.matchers = matchers;
     }
 
     public boolean match(final Message message) {
+
         try {
             String key = getKey(message);
             if (!alreadyChecked.contains(key)) {
@@ -42,6 +45,7 @@ public class MailSearchTerm extends SearchTerm {
                     }
                 }
             } else {
+                countSkipped++;
                 return false;
             }
         } catch (MessagingException ex) {
@@ -96,7 +100,9 @@ public class MailSearchTerm extends SearchTerm {
         }
 
         public boolean match(Message message) throws MessagingException {
+            LOG.debug("Checking date: " + message.getReceivedDate());
             if (dateFormat.format(message.getReceivedDate()).equals(date)) {
+                LOG.info("Found date: " + date);
                 return true;
             }
             return false;
@@ -118,6 +124,7 @@ public class MailSearchTerm extends SearchTerm {
             if (message.getFrom() != null && message.getFrom().length > 0) {
                 for (Address address : message.getFrom()) {
                     if (((InternetAddress) address).getAddress().equalsIgnoreCase(sender)) {
+                        LOG.info("Found sender: " + sender);
                         return true;
                     }
                 }
@@ -140,6 +147,7 @@ public class MailSearchTerm extends SearchTerm {
         public boolean match(Message message) throws MessagingException {
             try {
                 if (getBody(message).contains(body)) {
+                    LOG.info("Found body: " + body);
                     return true;
                 }
             } catch (IOException e) {
@@ -168,5 +176,9 @@ public class MailSearchTerm extends SearchTerm {
     private String getKey(Message message) throws MessagingException {
         String sender = (message.getFrom() != null && message.getFrom().length > 0) ? message.getFrom()[0].toString() : "unknown_sender";
         return message.getSubject() + sender + message.getReceivedDate();
+    }
+
+    public int getCountSkipped() {
+        return countSkipped;
     }
 }

@@ -35,17 +35,20 @@ public class MailHandlerFixtureTest {
         greenMail.stop();
     }
 
+
     @Ignore
     @Test
     public void testRealMailProvider() throws ParseException, MessagingException {
-        String date = new Date().toString();
-
+        String date = formatter.format(new Date());
         mailHandlerFixture.setMailProviderWithProtocolHostUserAndPasswordAndHostForSending("imaps", "imap.one.com:993", "ilionx@4family.nl", "wachtwoord", "send.one.com");
-        mailHandlerFixture.sendMailToFromWithSubjectAndContent("ilionx@4family.nl", "ilionx@4family.nl", "Test mail", "Body with date " + date + " and something");
-        Assert.assertTrue(mailHandlerFixture.mailReceivedWhichContainsFromOnDate(date, "jelle@4family.nl", ""));
+        mailHandlerFixture.sendMailToFromWithSubjectAndContent("ilionx@4family.nl", "ilionx@4family.nl", "Test mail", "Java en ESB");
+        Assert.assertTrue(mailHandlerFixture.mailReceivedWhichContainsFromAfterTimestamp("Java", "ilionx@4family.nl", "01-01-2015 12:11:10"));
+        Assert.assertTrue(mailHandlerFixture.mailReceivedWhichContainsFromOnDate("Java", "ilionx@4family.nl", date));
+        Assert.assertTrue(mailHandlerFixture.noMailReceivedWhichContainsFromOnDateWithinSeconds("ESB", "ilionx@4family.nl", date, "5"));
     }
 
-    //@Test
+    @Ignore
+    @Test
     public void testExternalLinksMailProvider() throws ParseException, MessagingException {
         mailHandlerFixture.setMailProviderWithProtocolHostUserAndPasswordAndHostForSending("imaps", "imap.one.com:993", "ilionx@4family.nl", "wachtwoord", "send.one.com");
         Assert.assertTrue(mailHandlerFixture.mailReceivedWhichContainsFromOnDate("bestelformulier", "jdebruin@ilionx.com", "15-06-2015"));
