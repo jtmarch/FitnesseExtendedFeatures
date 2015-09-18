@@ -1,5 +1,6 @@
 package com.ilionx.nl.mail;
 
+import com.ilionx.nl.products.ProductsFixture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

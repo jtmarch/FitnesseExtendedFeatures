@@ -1,6 +1,7 @@
 package com.ilionx.nl;
 
 import com.ilionx.nl.mail.MailHandlerFixture;
+import com.ilionx.nl.products.ProductsFixture;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
