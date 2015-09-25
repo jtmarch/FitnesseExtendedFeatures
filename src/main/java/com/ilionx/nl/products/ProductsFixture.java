@@ -1,8 +1,8 @@
 package com.ilionx.nl.products;
 
 import com.ilionx.nl.xml.XmlReader;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ public class ProductsFixture {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProductsFixture.class);
 
-    private final Map<String, Product> productMap = new HashMap<>();
+    private Map<String, Product> productMap = new HashMap<>();
 
     private List<String> shoppingCart = new ArrayList<>();
 
@@ -21,8 +21,9 @@ public class ProductsFixture {
         Dataroot products = new XmlReader<Dataroot>().read("products/products.xml", new Dataroot());
         for (Product product : products.getProducts()) {
             productMap.put(product.getProductId(), product);
-            LOG.info("Added product with productId {} and price {}", product.getProductId(), product.getProductPrice());
         }
+        LOG.info("productMap size:" +productMap.keySet().size());
+        LOG.info("shopping cart size:" + shoppingCart.size());
     }
 
     /**
@@ -30,7 +31,7 @@ public class ProductsFixture {
      * @param productId
      * @param nrOfItems
      */
-    public void addProductsWithProductIdToShoppingCart(String productId, int nrOfItems){
+    public void addProductsWithProductIdToShoppingCart( int nrOfItems, String productId){
         for(int x=0;x<nrOfItems;x++){
             addToCart(productId);
         }
@@ -41,15 +42,32 @@ public class ProductsFixture {
      * @param price
      */
     public boolean thatTheTotalPriceOfTheProductsInTheShoppingCartIs(double price){
-        LOG.info("The total number of prodycts in the map is: {}", productMap.keySet().size());
         if(getTotalPrice() == price){
             return true;
         }
         return false;
     }
 
-    public void addToCart(String id) {
-        shoppingCart.add(id);
+    /**
+     * | ensure | that the total vat of the products in the shopping cart is | <i>expression</i> |
+     * @param vat
+     */
+    public boolean thatTheTotalVatOfTheProductsInTheShoppingCartIs(double vat){
+        if(getTotalVat() == vat){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * | ensure | that the total amount of the products in the shopping cart is | <i>expression</i> |
+     * @param amount
+     */
+    public boolean thatTheTotalAmountOfProductsInTheShoppingCartIs(int amount){
+        if(shoppingCart.size() == amount ){
+            return true;
+        }
+        return false;
     }
 
     public int getNrOfProducts(String productId){
@@ -62,19 +80,28 @@ public class ProductsFixture {
         return count;
     }
 
+    public void addToCart(String id) {
+        shoppingCart.add(id);
+    }
+
     public double getTotalPrice(){
         return getTotalPrice(null);
     }
 
-    public double getTotalVat(){
-        return getTotalVat(null);
-    }
+    public double getTotalVat(){return getTotalVat(null);}
 
     public double getTotalPrice(String requestedProductId){
+        LOG.info("product keys: " + productMap.keySet().toString() );
+        LOG.info("shopping cart keys: " + shoppingCart.toString() );
+
         double priceTotal = 0.0;
+
         for(String id : shoppingCart){
             if(requestedProductId == null || requestedProductId.equalsIgnoreCase(id)){
-                priceTotal += productMap.get(id).getProductPrice();
+                Product currentProduct = productMap.get(id);
+                if(null != currentProduct){
+                    priceTotal += currentProduct.getProductPrice();
+                }
             }
         }
         return priceTotal;

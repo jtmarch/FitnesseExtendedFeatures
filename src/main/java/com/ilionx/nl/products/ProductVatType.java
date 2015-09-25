@@ -2,7 +2,8 @@ package com.ilionx.nl.products;
 
 public enum ProductVatType {
 
-    IRISH_VAR_23("Irish VAR 23%", 23);
+    IRISH_VAR_23("Irish VAR 23%", 23),
+    IRISH_VAT_23("Irish VAT 23%", 23);
 
     private String description;
 
