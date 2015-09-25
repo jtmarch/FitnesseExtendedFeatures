@@ -41,7 +41,7 @@ public class SoapFixtureTest extends TestCase {
     @Test
     public void testSendXmlTo() throws Exception {
         soapFixture.addXmlFile("soap/exampleSoapMessage.xml");
-        soapFixture.sendXmlTo("http://" + SERVER + ":" + port + "/someWebservice");
+        soapFixture.sendSoapMessageTo("http://" + SERVER + ":" + port + "/someWebservice");
         Assert.assertNotNull(soapFixture.response());
         Assert.assertTrue(soapFixture.response().length() > 0);
     }
@@ -57,13 +57,20 @@ public class SoapFixtureTest extends TestCase {
                 "        </soap:doSomething>\n" +
                 "    </soapenv:Body>\n" +
                 "</soapenv:Envelope>");
-        soapFixture.sendXmlTo("http://" + SERVER + ":" + port + "/someWebservice");
+        soapFixture.sendSoapMessageTo("http://" + SERVER + ":" + port + "/someWebservice");
         Assert.assertNotNull(soapFixture.response());
         Assert.assertTrue(soapFixture.response().length() > 0);
     }
 
-    public void testCheckResponseElementHasValue() throws Exception {
-
+    @Test
+    public void testSendFreeMarkerTemplateTo() throws Exception {
+        soapFixture.setSoapTemplateFile("soap/exampleFreemarkerMessage.ftl");
+        String inputField = "Hello world!!";
+        soapFixture.setTemplateParameterWithValue("valueForTemplate", inputField);
+        soapFixture.sendSoapMessageTo("http://" + SERVER + ":" + port + "/someWebservice");
+        Assert.assertNotNull(soapFixture.response());
+        Assert.assertTrue(soapFixture.response().length() > 0);
+        soapFixture.checkResponseElementHasValue("return", inputField);
     }
 
     public void testHeaders() throws Exception {
