@@ -3,6 +3,7 @@
     <soapenv:Body>
         <soap:doSomething>
             <value>${valueForTemplate}</value>
+            <secondValue>&lt;Symbol&gt;helloworld&lt;/Symbol&gt;</secondValue>
         </soap:doSomething>
     </soapenv:Body>
 </soapenv:Envelope>

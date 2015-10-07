@@ -67,10 +67,12 @@ public class SoapFixtureTest extends TestCase {
         soapFixture.setSoapTemplateFile("soap/exampleFreemarkerMessage.ftl");
         String inputField = "Hello world!!";
         soapFixture.setTemplateParameterWithValue("valueForTemplate", inputField);
+        soapFixture.setTemplateParameterWithValue("valueForTemplate", inputField);
         soapFixture.sendSoapMessageTo("http://" + SERVER + ":" + port + "/someWebservice");
         Assert.assertNotNull(soapFixture.response());
         Assert.assertTrue(soapFixture.response().length() > 0);
         soapFixture.checkResponseElementHasValue("return", inputField);
+        soapFixture.checkResponseElementHasValue("Symbol", "helloworld");
     }
 
     public void testHeaders() throws Exception {

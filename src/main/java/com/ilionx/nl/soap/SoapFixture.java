@@ -7,6 +7,8 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -99,10 +101,18 @@ public class SoapFixture {
     public boolean checkResponseElementHasValue(String element, String value) {
         boolean elementHasValue = false;
         String[] elements = this.response.split("<");
-        for (int counter = 0; counter < elements.length; counter++) {
-            if (elements[counter].contains(element)) {
-                int endOfElement = elements[counter].indexOf(">") + 1;
-                String foundValue = elements[counter].substring(endOfElement).trim();
+        List<String> allElements = new ArrayList<>();
+        for(int x=0;x<element.length();x++){
+            allElements.addAll(Arrays.asList(elements[x].split("&lt;")));
+        }
+
+        for (String elementStr : allElements) {
+            if (elementStr.contains(element)) {
+                int endOfElement = elementStr.indexOf(">") + 1;
+                if(endOfElement == 0){
+                    endOfElement = elementStr.indexOf("&gt;") + 1;
+                }
+                String foundValue = elementStr.substring(endOfElement).trim();
                 if (foundValue.equals(value)) {
                     elementHasValue = true;
                 }
