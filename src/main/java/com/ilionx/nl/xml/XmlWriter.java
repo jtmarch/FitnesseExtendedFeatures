@@ -20,4 +20,24 @@ public class XmlWriter<T extends Object> {
         }
     }
 
+
+    public XmlWriter<T> createFile(String fileName){
+
+        try {
+
+            File file = new File(fileName);
+
+            if (file.createNewFile()){
+                System.out.println("File is created!");
+            }else{
+                System.out.println("File already exists.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return this;
+    }
+
 }
