@@ -63,17 +63,26 @@ public class SoapFixtureTest extends TestCase {
     }
 
     @Test
-    public void testSendFreeMarkerTemplateTo() throws Exception {
+     public void testSendFreeMarkerTemplateTo() throws Exception {
         soapFixture.setSoapTemplateFile("soap/exampleFreemarkerMessage.ftl");
         String inputField = "Hello world!!";
-        soapFixture.setTemplateParameterWithValue("valueForTemplate", inputField);
         soapFixture.setTemplateParameterWithValue("valueForTemplate", inputField);
         soapFixture.sendSoapMessageTo("http://" + SERVER + ":" + port + "/someWebservice");
         Assert.assertNotNull(soapFixture.response());
         Assert.assertTrue(soapFixture.response().length() > 0);
-        soapFixture.checkResponseElementHasValue("return", inputField);
-        soapFixture.checkResponseElementHasValue("Symbol", "helloworld");
+        soapFixture.responseElementHasValue("return", inputField);
+        soapFixture.responseElementHasValue("Symbol", "helloworld");
     }
+
+    @Test
+    public void testSendFreeMarkerTemplateWithEscapedResponse() throws Exception {
+        soapFixture.setSoapTemplateFile("soap/exampleEscapedMessage.ftl");
+        soapFixture.sendSoapMessageTo("http://" + SERVER + ":" + port + "/someWebservice");
+        Assert.assertNotNull(soapFixture.response());
+        Assert.assertTrue(soapFixture.response().length() > 0);
+        soapFixture.responseElementHasValue("Symbol", "helloworld");
+    }
+
 
     public void testHeaders() throws Exception {
 

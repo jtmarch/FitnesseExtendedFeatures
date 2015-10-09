@@ -4,6 +4,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -13,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SoapFixture {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SoapFixture.class);
 
     private FileToStringReader fileReader = new FileToStringReader();
     private SoapConnection connection = new SoapConnection();
@@ -92,13 +96,13 @@ public class SoapFixture {
     }
 
     /**
-     * | check response element | x | has value | y |
+     * | ensure | response element | x | has value | y |
      *
      * @param element
      * @param value
      * @return
      */
-    public boolean checkResponseElementHasValue(String element, String value) {
+    public boolean responseElementHasValue(String element, String value) {
         boolean elementHasValue = false;
         String[] elements = this.response.split("<");
         List<String> allElements = new ArrayList<>();
@@ -110,9 +114,10 @@ public class SoapFixture {
             if (elementStr.contains(element)) {
                 int endOfElement = elementStr.indexOf(">") + 1;
                 if(endOfElement == 0){
-                    endOfElement = elementStr.indexOf("&gt;") + 1;
+                    endOfElement = elementStr.indexOf("&gt;") + 4;
                 }
                 String foundValue = elementStr.substring(endOfElement).trim();
+                LOG.info("Value found: {} ", foundValue);
                 if (foundValue.equals(value)) {
                     elementHasValue = true;
                 }
