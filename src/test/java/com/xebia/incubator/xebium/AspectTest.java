@@ -10,7 +10,7 @@ public class AspectTest {
 
     @Test
     public void testAspect(){
-        Assert.assertEquals("kip", someMethod("param:somevalue"));
+        Assert.assertEquals("https://nl.heineken.com/mijn-account/inloggen?returnUrl=http%3a%2f%2fnl.heineken.com%2fshop", someMethod("param://dataroot/browserUrl"));
     }
 
     public String someMethod(String arg) {

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataroot generated="2015-08-07T13:48:33">
+    <browserUrl>https://nl.heineken.com/mijn-account/inloggen?returnUrl=http%3a%2f%2fnl.heineken.com%2fshop</browserUrl>
+    <Product>
+        <Id>1</Id>
+        <productId>0740</productId>
+        <productName>HEINEKEN 20L Keg</productName>
+        <productPrice>68.74</productPrice>
+        <productCurrency>EUR</productCurrency>
+        <ProductUnit>Keg</ProductUnit>
+        <productScale>1</productScale>
+        <productTaxClass>Irish VAT 23%</productTaxClass>
+    </Product>
+    <Product>
+        <Id>2</Id>
+        <productId>0733</productId>
+        <productName>HEINEKEN 30L Keg</productName>
+        <productPrice>103.46</productPrice>
+        <productCurrency>EUR</productCurrency>
+        <ProductUnit>Keg</ProductUnit>
+        <productScale>1</productScale>
+        <productTaxClass>Irish VAT 23%</productTaxClass>
+    </Product>
+    <Product>
+        <Id>3</Id>
+        <productId>0703</productId>
+        <productName>HEINEKEN 50L Keg</productName>
+        <productPrice>156.75</productPrice>
+        <productCurrency>EUR</productCurrency>
+        <ProductUnit>Keg</ProductUnit>
+        <productScale>1</productScale>
+        <productTaxClass>Irish VAR 23%</productTaxClass>
+    </Product>
+</dataroot>
