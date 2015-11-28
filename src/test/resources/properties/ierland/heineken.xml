@@ -11,7 +11,7 @@
         <productScale>1</productScale>
         <productTaxClass>Irish VAT 23%</productTaxClass>
     </Product>
-    <Product>
+    <Product id="2">
         <Id>2</Id>
         <productId>0733</productId>
         <productName>HEINEKEN 30L Keg</productName>

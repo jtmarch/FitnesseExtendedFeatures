@@ -12,11 +12,20 @@ import java.io.InputStream;
 
 public class XmlPropertyProvider {
 
+    private static final String COUNTRY = "country";
+
+    public static void setCountry(String country) {
+        System.setProperty(COUNTRY, country);
+    }
+
     public String getXmlPropertyByXpath(final String fileName, final String xpath) {
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+
+        String country = System.getProperty(COUNTRY, "ierland");
+
         try {
             DocumentBuilder builder = domFactory.newDocumentBuilder();
-            InputStream fileInputStream = XmlPropertyProvider.class.getClassLoader().getResourceAsStream("properties/" + fileName + ".xml");
+            InputStream fileInputStream = XmlPropertyProvider.class.getClassLoader().getResourceAsStream("properties/" + country + "/" + fileName + ".xml");
             Document dDoc = builder.parse(fileInputStream);
 
             XPath xPath = XPathFactory.newInstance().newXPath();

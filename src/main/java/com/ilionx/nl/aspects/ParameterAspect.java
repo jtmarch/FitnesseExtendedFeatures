@@ -17,9 +17,15 @@ public class ParameterAspect {
         for (int x = 0; x < joinPoint.getArgs().length; x++) {
             args[x] = joinPoint.getArgs()[x];
             if (joinPoint.getArgs()[x] instanceof String) {
-                if (((String) joinPoint.getArgs()[x]).startsWith("param:")) {
-                    String xpath = ((String) joinPoint.getArgs()[x]).substring(6);
-                    args[x] = xmlPropertyProvider.getXmlPropertyByXpath("heineken", xpath);
+                if (((String) joinPoint.getArgs()[x]).startsWith("#")) {
+
+                    String argument = ((String) joinPoint.getArgs()[x]);
+                    int colonIndex = argument.indexOf(":");
+
+                    String fileName = argument.substring(1, colonIndex);
+                    String xpath = argument.substring(colonIndex+1);
+
+                    args[x] = xmlPropertyProvider.getXmlPropertyByXpath(fileName, xpath);
                 }
             }
         }
