@@ -13,17 +13,43 @@ import java.io.InputStream;
 public class XmlPropertyProvider {
 
     private static final String COUNTRY = "country";
+    private static final String COMMON_COUNTRY_DIR = "common";
 
-    public static void setCountry(String country) {
+    /**
+     * Set the System.property <i>country</i> to a certain value. This property is used
+     * to determine the directory to search for XML files.
+     * @param country the country to set.
+     */
+    public static void setCountry(final String country) {
         System.setProperty(COUNTRY, country);
     }
 
+    /**
+     * Get a property value from a xml file called <i>fileName</i> using the
+     * <i>System.getProperty("country")</i> for the directory and the <i>xpath</i> expression
+     * to find the element in the xml file.
+     * @param fileName the filename in the common dir
+     * @param xpath the xpath expression used to find the element in the xml file
+     * @return the found value.
+     */
     public String getXmlPropertyByXpath(final String fileName, final String xpath) {
-        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+        String country = System.getProperty(COUNTRY);
+        return getPropertyFromXml(fileName, xpath, country);
+    }
 
-        String country = System.getProperty(COUNTRY, "ierland");
+    /**
+     * Ignore the System property named country and use the common dir instead.
+     * @param fileName the filename in the common dir
+     * @param xpath the xpath expression used to find the element in the xml file
+     * @return the found value.
+     */
+    public String getXmlPropertyByXpathFromCommon(final String fileName, final String xpath) {
+        return getPropertyFromXml(fileName, xpath, COMMON_COUNTRY_DIR);
+    }
 
+    private String getPropertyFromXml(final String fileName, final String xpath, final String country) {
         try {
+            DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = domFactory.newDocumentBuilder();
             InputStream fileInputStream = XmlPropertyProvider.class.getClassLoader().getResourceAsStream("properties/" + country + "/" + fileName + ".xml");
             Document dDoc = builder.parse(fileInputStream);

@@ -13,7 +13,7 @@ public class AspectTest {
 
     @Test
     public void testAspect(){
-        Assert.assertEquals("https://nl.heineken.com/mijn-account/inloggen?returnUrl=http%3a%2f%2fnl.heineken.com%2fshop", someMethod("#heineken://dataroot/browserUrl"));
+        Assert.assertEquals("https://nl.heineken.com/mijn-account/inloggen?returnUrl=http%3a%2f%2fnl.heineken.com%2fshop", someMethod("#!general://dataroot/browserUrl"));
 
         xmlPropertyProvider.setCountry("nederland");
         Assert.assertEquals("https://nl.heineken.com/mijn-account-nederland/inloggen?returnUrl=http%3a%2f%2fnl.heineken.com%2fshop", someMethod("#heineken://dataroot/browserUrl"));
