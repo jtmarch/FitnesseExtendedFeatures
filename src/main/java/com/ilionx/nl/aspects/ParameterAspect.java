@@ -48,6 +48,7 @@ public class ParameterAspect {
                     } else {
                         args[x] = xmlPropertyProvider.getXmlPropertyByXpath(fileName, xpath);
                     }
+                    System.err.println("Property val: " + args[x]);
                 }
             }
         }

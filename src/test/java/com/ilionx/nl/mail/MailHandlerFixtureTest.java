@@ -7,17 +7,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by jdebruin on 6/10/15.
- */
 @RunWith(JUnit4.class)
 public class MailHandlerFixtureTest {
 
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+    private final SimpleDateFormat gmailFormatter = new SimpleDateFormat("yyyy/MM/dd");
 
     private GreenMail greenMail;
 
